@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budibase Clone - No-Code Platform</title>
+    <style>
+        /* === БАЗОВЫЕ НАСТРОЙКИ === */
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --brand-blue: #2563eb;
+            --brand-blue-hover: #1d4ed8;
+            --top-bar-bg: #1a1a1a;
+            --border-color: #e5e7eb;
+            --placeholder-bg: #f3f4f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Фон вокруг макета (как на картинке) */
+        body {
+            background: linear-gradient(135deg, #06b6d4 0%, #a855f7 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        /* Контейнер окна браузера */
+        .browser-window {
+            background: var(--bg-color);
+            width: 100%;
+            max-width: 1400px;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* === ВЕРХНЯЯ ПАНЕЛЬ (Top Bar) === */
+        .top-bar {
+            background: var(--top-bar-bg);
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .window-controls {
+            position: absolute;
+            left: 16px;
+            display: flex;
+            gap: 8px;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27c93f; }
+        
+        .github-stars {
+            color: white;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        
+        /* Ячейка для иконки Github */
+        .icon-placeholder-small {
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* === НАВИГАЦИЯ (Header) === */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 48px;
+            border-bottom: 1px solid transparent;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--text-main);
+        }
+
+        /* Ячейка для логотипа Budibase */
+        .logo-box {
+            width: 32px;
+            height: 32px;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-links a.dropdown::after { content: ' ▾'; font-size: 12px; }
+
+        .auth-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .auth-actions a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .auth-actions a.sign-in { text-decoration: underline; color: var(--text-muted); }
+        
+        .btn-black {
+            background: #000;
+            color: #fff !important;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none !important;
+            transition: opacity 0.2s;
+        }
+        .btn-black:hover { opacity: 0.8; }
+
+        /* === ГЛАВНАЯ СЕКЦИЯ (Hero) === */
+        .hero {
+            display: flex;
+            padding: 60px 48px;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+
+        .hero-text h1 {
+            font-size: 56px;
+            line-height: 1.1;
+            color: var(--text-main);
+            margin-bottom: 32px;
+            letter-spacing: -1px;
+        }
+        .hero-text h1 span { color: var(--brand-blue); }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .btn-blue {
+            background: var(--brand-blue);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-blue:hover { background: var(--brand-blue-hover); }
+
+        .btn-outline {
+            background: #fff;
+            color: var(--text-muted);
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .btn-outline:hover { border-color: #9ca3af; }
+
+        .trusted-by {
+            font-size: 12px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .trusted-logos {
+            display: flex;
+            gap: 32px;
+            margin-top: 16px;
+            align-items: center;
+        }
+        /* Ячейки для логотипов компаний */
+        .logo-placeholder {
+            width: 40px;
+            height: 40px;
+            background: var(--placeholder-bg);
+            border-radius: 50%;
+            border: 1px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #999;
+        }
+
+        /* Правая часть (Видео/Изображение) */
+        .hero-visual {
+            flex: 1.2;
+            position: relative;
+        }
+        /* Ячейка для главного фото/видео */
+        .video-placeholder {
+            width: 100%;
+            height: 450px;
+            background: var(--placeholder-bg);
+            border: 2px dashed #d1d5db;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .video-placeholder::after {
+            content: "Место для видео/скриншота";
+            color: #9ca3af;
+            font-size: 18px;
+        }
+        .play-btn-placeholder {
+            position: absolute;
+            width: 64px;
+            height: 48px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .play-btn-placeholder::before {
+            content: '';
+            border-style: solid;
+            border-width: 10px 0 10px 16px;
+            border-color: transparent transparent transparent #fff;
+        }
+
+        /* === НИЖНЯЯ СЕКЦИЯ (Интерфейсы и вкладки) === */
+        .features-section {
+            padding: 0 48px 48px 48px;
+        }
+        
+        .ui-cards {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 24px;
+            overflow-x: hidden;
+        }
+
+        /* Ячейки для маленьких скриншотов UI */
+        .ui-card-placeholder {
+            flex: 1;
+            height: 160px;
+            background: #fafafa;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 14px;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .ui-card-placeholder::before {
+            content: 'UI компонент';
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+        .tab {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            padding-bottom: 8px;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .tab:hover { color: var(--text-main); }
+        .tab.active {
+            color: var(--text-main);
+        }
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -17px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--text-main);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="browser-window">
+        <!-- Верхняя панель (Стиль macOS + Github) -->
+        <div class="top-bar">
+            <div class="window-controls">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="github-stars">
+                <span class="icon-placeholder-small"></span>
+                14,400 stars on GitHub &rarr;
+            </div>
+        </div>
+
+        <!-- Навигация -->
+        <header>
+            <div class="logo-section">
+                <!-- Ячейка для логотипа -->
+                <div class="logo-box">bb</div>
+                budibase
+            </div>
+            
+            <nav class="nav-links">
+                <a href="#" class="dropdown">Product</a>
+                <a href="#">Templates</a>
+                <a href="#">Customers</a>
+                <a href="#">Pricing</a>
+            </nav>
+
+            <div class="auth-actions">
+                <a href="#">Docs</a>
+                <a href="#">Contact sales</a>
+                <a href="#" class="sign-in">Sign in</a>
+                <a href="#" class="btn-black">Get started for free</a>
+            </div>
+        </header>
+
+        <!-- Главный экран -->
+        <main class="hero">
+            <div class="hero-text">
+                <h1>Build internal apps in minutes, <span>the easy way</span></h1>
+                
+                <div class="cta-buttons">
+                    <button class="btn-blue">Get started for free</button>
+                    <button class="btn-outline">
+                        <span class="icon-placeholder-small" style="background: #ea4335;"></span>
+                        Sign-up with Google
+                    </button>
+                </div>
+
+                <div class="trusted-by">Trusted by over 30,000 companies, including</div>
+                <div class="trusted-logos">
+                    <!-- Ячейки для логотипов компаний (Apple, P&G и тд) -->
+                    <div class="logo-placeholder">Logo</div>
+                    <div class="logo-placeholder">Logo</div>
+                    <div class="logo-placeholder">Logo</div>
+                    <div class="logo-placeholder">Logo</div>
+                    <div class="logo-placeholder">Logo</div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <!-- Ячейка для главного видео/презентации интерфейса -->
+                <div class="video-placeholder">
+                    <div class="play-btn-placeholder"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Нижний блок с карточками и вкладками -->
+        <section class="features-section">
+            <div class="ui-cards">
+                <!-- Ячейки для карточек UI (Фильтры, формы, графики) -->
+                <div class="ui-card-placeholder"></div>
+                <div class="ui-card-placeholder"></div>
+                <div class="ui-card-placeholder"></div>
+                <div class="ui-card-placeholder"></div>
+                <div class="ui-card-placeholder"></div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="activateTab(this)">CRUD apps</div>
+                <div class="tab" onclick="activateTab(this)">Forms</div>
+                <div class="tab" onclick="activateTab(this)">Portals</div>
+                <div class="tab" onclick="activateTab(this)">Approval apps</div>
+                <div class="tab" onclick="activateTab(this)">Admin panels</div>
+            </div>
+        </section>
+    </div>
+
+    <!-- JavaScript для базового рабочего интерфейса -->
+    <script>
+        // Функция для переключения активных вкладок внизу
+        function activateTab(clickedTab) {
+            // Убираем класс active у всех вкладок
+            let tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Добавляем класс active нажатой вкладке
+            clickedTab.classList.add('active');
+            
+            // Здесь в будущем можно добавить логику смены контента в карточках выше
+            console.log('Вкладка переключена на:', clickedTab.innerText);
+        }
+
+        // Демонстрация работоспособности кнопок
+        document.querySelector('.btn-blue').addEventListener('click', () => {
+            alert('Кнопка "Get started for free" работает! Готово к интеграции логики.');
+        });
+    </script>
+</body>
+</html>
